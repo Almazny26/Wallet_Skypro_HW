@@ -1,0 +1,337 @@
+.expenses-page {
+  width: 100%;
+  min-height: calc(100vh - 64px);
+  background-color: #f4f5f6;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 1.5;
+  color: #000000;
+  margin: 0;
+  padding: 36px 120px 0 120px;
+  text-align: left;
+  width: 100%;
+  max-width: 1440px;
+  box-sizing: border-box;
+}
+
+.expenses-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.analysis-content {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 32px 0 40px 120px;
+  margin-top: 0;
+  box-sizing: border-box;
+}
+
+.period-selection-card {
+  width: 379px;
+  height: 540px;
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 20px 67px -12px rgba(0, 0, 0, 0.13);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-sizing: border-box;
+}
+
+.period-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.period-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.219;
+  color: #000000;
+  margin: 0;
+}
+
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.month-year {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.219;
+  color: #000000;
+}
+
+.calendar-wrapper {
+  position: relative;
+  border-top: 0.5px solid #999999;
+  padding-top: 16px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.week-days-fixed {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 6px;
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 10;
+  padding-bottom: 8px;
+}
+
+.week-day {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.219;
+  color: #999999;
+  text-align: center;
+  width: 40px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calendar-days-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0;
+}
+
+.calendar-month {
+  margin-bottom: 24px;
+}
+
+.month-separator {
+  border-top: 0.5px solid #999999;
+  margin: 16px 0;
+  padding-top: 16px;
+}
+
+.month-year-inline {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.219;
+  color: #000000;
+  margin-bottom: 12px;
+}
+
+.calendar-days-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.calendar-days-scrollable::-webkit-scrollbar-track {
+  background: #f4f5f6;
+  border-radius: 3px;
+}
+
+.calendar-days-scrollable::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 3px;
+}
+
+.calendar-days-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #999999;
+}
+
+.calendar-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.calendar-day {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 60px;
+  background-color: #f4f5f6;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.219;
+  color: #000000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s, color 0.2s;
+  padding: 10px 15px;
+}
+
+.calendar-day:hover:not(.empty):not(.selected) {
+  background-color: #e0e0e0;
+}
+
+.calendar-day.empty {
+  background-color: transparent;
+  cursor: default;
+}
+
+.calendar-day.selected {
+  background-color: #f1ebfd;
+  color: #7334ea;
+}
+
+.calendar-day.in-range {
+  background-color: #f1ebfd;
+  color: #7334ea;
+}
+
+.calendar-day.range-boundary {
+  background-color: #7334ea;
+  color: #ffffff;
+}
+
+.calendar-day.selected-date {
+  background-color: #f1ebfd;
+  color: #7334ea;
+  border: 1px solid #7334ea;
+}
+
+.analysis-card {
+  width: 789px;
+  height: 540px;
+  background-color: #ffffff;
+  border-radius: 30px;
+  box-shadow: 0px 20px 67px -12px rgba(0, 0, 0, 0.13);
+  padding: 32px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.analysis-title {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.219;
+  color: #000000;
+  margin: 0 0 24px 0;
+}
+
+.analysis-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  min-height: 0;
+}
+
+.total-expenses {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.total-amount {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.219;
+  color: #000000;
+}
+
+.expenses-date {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.219;
+  color: #999999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.expenses-date span {
+  font-weight: 600;
+}
+
+.category-stats {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 32px;
+  margin-top: 24px;
+  height: 328px;
+}
+
+.category-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  width: 94px;
+  height: 100%;
+}
+
+.category-bar {
+  width: 100%;
+  border-radius: 12px;
+  min-height: 4px;
+}
+
+.category-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.category-amount {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.219;
+  color: #000000;
+  text-align: center;
+}
+
+.category-name {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.219;
+  color: #000000;
+  text-align: center;
+}
