@@ -20,7 +20,7 @@ function ExpensesAnalysis({ expenses }) {
     start: initialDate,
     end: initialDate,
   }));
-  // Реф для прокрутки календаря
+  // Реф для прокрутки календаря (пока не используется, но может пригодиться для программной прокрутки)
   const calendarScrollRef = useRef(null);
   // Текущий месяц для отображения в календаре
   const [currentMonth, setCurrentMonth] = useState(new Date(2024, 6, 1));
@@ -36,7 +36,18 @@ function ExpensesAnalysis({ expenses }) {
 
   // Парсим дату из формата ДД.ММ.ГГГГ
   const parseDate = (dateString) => {
-    const [day, month, year] = dateString.split(".").map(Number);
+    if (!dateString || typeof dateString !== "string") {
+      return normalizeDate(new Date(0)); // Возвращаем минимальную дату при ошибке
+    }
+    const parts = dateString.split(".");
+    if (parts.length !== 3) {
+      return normalizeDate(new Date(0)); // Возвращаем минимальную дату при ошибке
+    }
+    const [day, month, year] = parts.map(Number);
+    // Проверяем валидность даты
+    if (isNaN(day) || isNaN(month) || isNaN(year)) {
+      return normalizeDate(new Date(0));
+    }
     return normalizeDate(new Date(year, month - 1, day));
   };
 
@@ -79,8 +90,14 @@ function ExpensesAnalysis({ expenses }) {
   // Фильтруем расходы по выбранному периоду
   // useMemo чтобы не фильтровать при каждом рендере
   const filteredExpenses = useMemo(() => {
+    if (!expenses || !Array.isArray(expenses)) {
+      return [];
+    }
     const { startDate, endDate } = getPeriodRange;
     return expenses.filter((expense) => {
+      if (!expense || !expense.date) {
+        return false;
+      }
       const expenseDate = parseDate(expense.date);
       return expenseDate >= startDate && expenseDate <= endDate;
     });
@@ -89,22 +106,43 @@ function ExpensesAnalysis({ expenses }) {
   // Подсчитываем суммы по категориям для диаграммы
   const categoryStats = useMemo(() => {
     const stats = {};
+    if (!filteredExpenses || !Array.isArray(filteredExpenses)) {
+      return stats;
+    }
     filteredExpenses.forEach((expense) => {
+      if (!expense || !expense.category) {
+        return;
+      }
       if (!stats[expense.category]) {
         stats[expense.category] = 0;
       }
-      stats[expense.category] += expense.amount;
+      // Проверяем, что amount является валидным числом
+      const amount = expense.amount;
+      if (amount != null && !isNaN(amount) && isFinite(amount)) {
+        stats[expense.category] += amount;
+      }
     });
     return stats;
   }, [filteredExpenses]);
 
   // Общая сумма за период
   const totalAmount = useMemo(() => {
-    return filteredExpenses.reduce((sum, expense) => sum + expense.amount, 0);
+    if (!filteredExpenses || !Array.isArray(filteredExpenses)) {
+      return 0;
+    }
+    return filteredExpenses.reduce((sum, expense) => {
+      const amount = expense?.amount;
+      if (amount != null && !isNaN(amount) && isFinite(amount)) {
+        return sum + amount;
+      }
+      return sum;
+    }, 0);
   }, [filteredExpenses]);
 
   // Максимальная сумма по категории - для расчета высоты столбцов
-  const maxCategoryAmount = Math.max(...Object.values(categoryStats), 0);
+  const categoryValues = Object.values(categoryStats);
+  const maxCategoryAmount =
+    categoryValues.length > 0 ? Math.max(...categoryValues, 0) : 0;
   const maxBarHeight = 328; // Максимальная высота столбца в пикселях
 
   const getPeriodDisplayText = () => {
@@ -199,6 +237,7 @@ function ExpensesAnalysis({ expenses }) {
   };
 
   const months = getMonthsForCalendar();
+  // Список всех категорий - выносим в константу, так как он не зависит от состояния
   const allCategories = [
     "Еда",
     "Транспорт",

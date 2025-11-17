@@ -55,7 +55,12 @@ function Expenses({ expenses, setExpenses }) {
       case "amount":
         // Сумма должна быть числом и больше 0
         const numValue = parseFloat(value);
-        return value.length > 0 && !isNaN(numValue) && isFinite(numValue) && numValue > 0;
+        return (
+          value.length > 0 &&
+          !isNaN(numValue) &&
+          isFinite(numValue) &&
+          numValue > 0
+        );
       default:
         return false;
     }
@@ -83,7 +88,7 @@ function Expenses({ expenses, setExpenses }) {
       ...prev,
       [field]: value,
     }));
-    
+
     // Валидация при изменении, если поле уже было затронуто
     if (touchedFields[field]) {
       validateField(field, value);
@@ -102,13 +107,16 @@ function Expenses({ expenses, setExpenses }) {
   // Обработчик добавления нового расхода
   const handleAddExpense = (e) => {
     e.preventDefault();
-    
+
     // Валидируем все поля при отправке формы
-    const isDescriptionValid = validateField("description", newExpense.description);
+    const isDescriptionValid = validateField(
+      "description",
+      newExpense.description
+    );
     const isCategoryValid = validateField("category", newExpense.category);
     const isDateValid = validateField("date", newExpense.date);
     const isAmountValid = validateField("amount", newExpense.amount);
-    
+
     // Помечаем все поля как затронутые, чтобы показать ошибки если есть
     setTouchedFields({
       description: true,
@@ -116,13 +124,8 @@ function Expenses({ expenses, setExpenses }) {
       date: true,
       amount: true,
     });
-    
-    if (
-      isDescriptionValid &&
-      isCategoryValid &&
-      isDateValid &&
-      isAmountValid
-    ) {
+
+    if (isDescriptionValid && isCategoryValid && isDateValid && isAmountValid) {
       // Создаем новый расход и добавляем в начало списка
       const expense = {
         id: Date.now(), // Используем timestamp как ID
@@ -157,17 +160,26 @@ function Expenses({ expenses, setExpenses }) {
 
   // Удаляем расход по ID
   const handleDeleteExpense = (id) => {
+    if (!expenses || !Array.isArray(expenses)) {
+      return;
+    }
     setExpenses(expenses.filter((expense) => expense.id !== id));
   };
 
   // Форматируем сумму в формат с пробелами и рублями
   const formatAmount = (amount) => {
-    return new Intl.NumberFormat("ru-RU", {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    })
-      .format(amount)
-      .replace(/,/g, " ") + " ₽";
+    // Проверяем, что amount является валидным числом
+    if (amount == null || isNaN(amount) || !isFinite(amount)) {
+      return "0 ₽";
+    }
+    return (
+      new Intl.NumberFormat("ru-RU", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+      })
+        .format(amount)
+        .replace(/,/g, " ") + " ₽"
+    );
   };
 
   return (
@@ -190,7 +202,9 @@ function Expenses({ expenses, setExpenses }) {
                   <div className="table-cell">{expense.description}</div>
                   <div className="table-cell">{expense.category}</div>
                   <div className="table-cell">{expense.date}</div>
-                  <div className="table-cell">{formatAmount(expense.amount)}</div>
+                  <div className="table-cell">
+                    {formatAmount(expense.amount)}
+                  </div>
                   <div className="table-cell">
                     <button
                       className="delete-button"
@@ -219,7 +233,9 @@ function Expenses({ expenses, setExpenses }) {
                   type="text"
                   placeholder="Введите описание"
                   value={newExpense.description}
-                  onChange={(e) => handleInputChange("description", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   onBlur={() => handleFieldBlur("description")}
                   className={
                     touchedFields.description && fieldErrors.description
@@ -311,7 +327,8 @@ function Expenses({ expenses, setExpenses }) {
                   className={
                     touchedFields.amount && fieldErrors.amount
                       ? "error"
-                      : newExpense.amount && isFieldValid("amount", newExpense.amount)
+                      : newExpense.amount &&
+                        isFieldValid("amount", newExpense.amount)
                       ? "valid"
                       : ""
                   }
