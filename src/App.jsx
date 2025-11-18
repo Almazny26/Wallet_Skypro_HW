@@ -153,6 +153,13 @@ function App() {
     setCurrentPage("expenses"); // После входа сразу показываем страницу расходов
   };
 
+  // Обработчик успешной регистрации - автоматически входим
+  const handleRegister = () => {
+    setIsAuthenticated(true);
+    setIsLogin(true); // Переключаемся обратно на форму входа (на случай выхода)
+    setCurrentPage("expenses"); // После регистрации сразу показываем страницу расходов
+  };
+
   // Обработчик выхода - сбрасываем все состояния
   const handleLogout = () => {
     setIsAuthenticated(false);
@@ -182,7 +189,10 @@ function App() {
               onLogin={handleLogin}
             />
           ) : (
-            <Register onSwitchToLogin={switchToLogin} />
+            <Register 
+              onSwitchToLogin={switchToLogin}
+              onRegister={handleRegister}
+            />
           )}
         </main>
       </div>

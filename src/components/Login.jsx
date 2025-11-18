@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { authenticateUser } from "../utils/auth";
 import "./Login.css";
 
 function Login({ onSwitchToRegister, onLogin }) {
@@ -99,11 +100,18 @@ function Login({ onSwitchToRegister, onLogin }) {
     const isPasswordValid = validateField("password", password);
 
     if (isEmailValid && isPasswordValid) {
-      setShowError(false);
-      // Здесь будет логика входа
-      console.log("Вход:", { email, password });
-      if (onLogin) {
-        onLogin();
+      // Проверяем, существует ли пользователь с такими данными
+      const user = authenticateUser(email, password);
+      
+      if (user) {
+        // Пользователь найден - успешный вход
+        setShowError(false);
+        if (onLogin) {
+          onLogin();
+        }
+      } else {
+        // Пользователь не найден - показываем ошибку
+        setShowError(true);
       }
     } else {
       setShowError(true);
@@ -167,8 +175,10 @@ function Login({ onSwitchToRegister, onLogin }) {
           {/* Общее сообщение об ошибке при попытке отправки с невалидными данными */}
           {showError && (
             <div className="error-message">
-              Упс! Введенные вами данные некорректны. Введите данные корректно и
-              повторите попытку.
+              {touchedFields.email && touchedFields.password && 
+               validateEmail(email) && validatePassword(password)
+                ? "Неверный email или пароль. Проверьте данные и повторите попытку."
+                : "Упс! Введенные вами данные некорректны. Введите данные корректно и повторите попытку."}
             </div>
           )}
 
