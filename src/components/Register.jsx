@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { saveUser, userExists } from '../utils/auth'
 import './Register.css'
 
-function Register({ onSwitchToLogin }) {
+function Register({ onSwitchToLogin, onRegister }) {
   // Состояния полей формы
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -111,9 +112,33 @@ function Register({ onSwitchToLogin }) {
     const isPasswordValid = validateField('password', password)
 
     if (isNameValid && isEmailValid && isPasswordValid) {
-      setShowError(false)
-      // Здесь будет логика регистрации
-      console.log('Регистрация:', { name, email, password })
+      // Проверяем, не существует ли уже пользователь с таким email
+      if (userExists(email)) {
+        setShowError(true)
+        return
+      }
+      
+      // Сохраняем нового пользователя
+      const saved = saveUser({ name, email, password })
+      
+      if (saved) {
+        // Пользователь успешно зарегистрирован
+        setShowError(false)
+        // Автоматически входим после регистрации
+        // Создаем объект пользователя для передачи
+        const newUser = {
+          id: Date.now(),
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          password: password
+        };
+        if (onRegister) {
+          onRegister(newUser) // Передаем объект пользователя
+        }
+      } else {
+        // Ошибка при сохранении (например, email уже существует)
+        setShowError(true)
+      }
     } else {
       setShowError(true)
     }
