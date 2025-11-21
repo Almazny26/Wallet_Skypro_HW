@@ -56,8 +56,28 @@
 
 .period-header {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
   gap: 16px;
+}
+
+.reset-period-button {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1.219;
+  color: #7334ea;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.reset-period-button:hover {
+  background-color: #f1ebfd;
 }
 
 .period-title {
@@ -191,10 +211,42 @@
   color: #000000;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s, color 0.2s;
-  padding: 10px 15px;
+  padding: 4px;
+  position: relative;
+}
+
+.calendar-day-number {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.calendar-day-expense-indicator {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  font-size: 8px;
+  font-weight: 700;
+  color: #ffffff;
+  background-color: #7334ea;
+  border-radius: 50%;
+  min-width: 14px;
+  height: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 2px;
+  box-sizing: border-box;
+  border: 1px solid #ffffff;
+  z-index: 5;
+}
+
+.calendar-day.has-expenses {
+  /* Дополнительное визуальное выделение дат с расходами */
 }
 
 .calendar-day:hover:not(.empty):not(.selected) {

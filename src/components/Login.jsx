@@ -107,7 +107,7 @@ function Login({ onSwitchToRegister, onLogin }) {
         // Пользователь найден - успешный вход
         setShowError(false);
         if (onLogin) {
-          onLogin();
+          onLogin(user); // Передаем объект пользователя
         }
       } else {
         // Пользователь не найден - показываем ошибку

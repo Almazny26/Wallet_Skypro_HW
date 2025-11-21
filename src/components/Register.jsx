@@ -125,8 +125,15 @@ function Register({ onSwitchToLogin, onRegister }) {
         // Пользователь успешно зарегистрирован
         setShowError(false)
         // Автоматически входим после регистрации
+        // Создаем объект пользователя для передачи
+        const newUser = {
+          id: Date.now(),
+          name: name.trim(),
+          email: email.trim().toLowerCase(),
+          password: password
+        };
         if (onRegister) {
-          onRegister()
+          onRegister(newUser) // Передаем объект пользователя
         }
       } else {
         // Ошибка при сохранении (например, email уже существует)

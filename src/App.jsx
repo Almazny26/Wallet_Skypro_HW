@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Expenses from "./components/Expenses";
-import ExpensesAnalysis from "./components/ExpensesAnalysis";
+import ExpensesPage from "./pages/ExpensesPage";
+import ExpensesAnalysisPage from "./pages/ExpensesAnalysisPage";
+import { getSession, saveSession, clearSession } from "./utils/auth";
 import logo from "./assets/logo.svg";
 import "./App.css";
 
@@ -130,14 +131,26 @@ const initialExpenses = [
 ];
 
 function App() {
-  // Состояние аутентификации - показываем форму входа или основной интерфейс
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  // Восстанавливаем состояние аутентификации из localStorage при загрузке
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const session = getSession();
+    return session !== null;
+  });
   // Переключатель между формой входа и регистрации
   const [isLogin, setIsLogin] = useState(true);
   // Текущая страница в авторизованном режиме
   const [currentPage, setCurrentPage] = useState("expenses");
   // Список всех расходов - поднимаем состояние наверх, чтобы делиться между компонентами
   const [expenses, setExpenses] = useState(initialExpenses);
+
+  // Восстанавливаем сессию при загрузке приложения
+  useEffect(() => {
+    const session = getSession();
+    if (session) {
+      setIsAuthenticated(true);
+      console.log('Сессия восстановлена для пользователя:', session.email);
+    }
+  }, []);
 
   const switchToRegister = () => {
     setIsLogin(false);
@@ -148,13 +161,17 @@ function App() {
   };
 
   // Обработчик успешного входа
-  const handleLogin = () => {
+  const handleLogin = (user) => {
+    // Сохраняем сессию пользователя
+    saveSession(user);
     setIsAuthenticated(true);
     setCurrentPage("expenses"); // После входа сразу показываем страницу расходов
   };
 
   // Обработчик успешной регистрации - автоматически входим
-  const handleRegister = () => {
+  const handleRegister = (user) => {
+    // Сохраняем сессию пользователя
+    saveSession(user);
     setIsAuthenticated(true);
     setIsLogin(true); // Переключаемся обратно на форму входа (на случай выхода)
     setCurrentPage("expenses"); // После регистрации сразу показываем страницу расходов
@@ -162,6 +179,8 @@ function App() {
 
   // Обработчик выхода - сбрасываем все состояния
   const handleLogout = () => {
+    // Очищаем сессию
+    clearSession();
     setIsAuthenticated(false);
     setIsLogin(true); // Возвращаемся к форме входа
   };
@@ -241,9 +260,9 @@ function App() {
       <main className="main-expenses">
         {/* Переключаемся между страницами расходов и анализа */}
         {currentPage === "expenses" ? (
-          <Expenses expenses={expenses} setExpenses={setExpenses} />
+          <ExpensesPage expenses={expenses} setExpenses={setExpenses} />
         ) : (
-          <ExpensesAnalysis expenses={expenses} />
+          <ExpensesAnalysisPage expenses={expenses} />
         )}
       </main>
     </div>
