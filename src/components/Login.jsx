@@ -102,7 +102,7 @@ function Login({ onSwitchToRegister, onLogin }) {
     if (isEmailValid && isPasswordValid) {
       // Проверяем, существует ли пользователь с такими данными
       const user = authenticateUser(email, password);
-      
+
       if (user) {
         // Пользователь найден - успешный вход
         setShowError(false);
@@ -175,8 +175,10 @@ function Login({ onSwitchToRegister, onLogin }) {
           {/* Общее сообщение об ошибке при попытке отправки с невалидными данными */}
           {showError && (
             <div className="error-message">
-              {touchedFields.email && touchedFields.password && 
-               validateEmail(email) && validatePassword(password)
+              {touchedFields.email &&
+              touchedFields.password &&
+              validateEmail(email) &&
+              validatePassword(password)
                 ? "Неверный email или пароль. Проверьте данные и повторите попытку."
                 : "Упс! Введенные вами данные некорректны. Введите данные корректно и повторите попытку."}
             </div>
